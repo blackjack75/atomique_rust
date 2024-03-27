@@ -1,30 +1,65 @@
 use inquire::{Text, validator::{StringValidator, Validation} , error::InquireError, Select};
+use termion::{color, clear, cursor};
+
+//use std::time::Duration;
+//use std::thread;
+
+mod todo;
 
 fn main() {
 
-    let options: Vec<&str> = vec!["Banana", "Apple", "Strawberry", "Grapes",
-    "Lemon", "Tangerine", "Watermelon", "Orange", "Pear", "Avocado", "Pineapple",
-];
-
-let ans: Result<&str, InquireError> = Select::new("What's your favorite fruit?", options).prompt();
-
-match ans {
-    Ok(choice) => println!("{}! That's mine too!", choice),
-    Err(_) => println!("There was an error, please try again"),
+    header();
+    menu();
 }
 
-    let validator = |input: &str| if input.chars().count() > 140 {
-        Ok(Validation::Invalid("You're only allowed 140 characters.".into()))
-    } else {
-        Ok(Validation::Valid)
-    };
 
-    let status = Text::new("What are you thinking about?")
-        .with_validator(validator)
-        .prompt();
+fn header() {
 
-    match status {
-        Ok(status) => println!("Your status is being published..."),
-        Err(err) => println!("Error while publishing your status: {}", err),
-    }
+    println!("{}", clear::All);
+    println!("{}", cursor::Goto(1, 1));
+
+
+    println!("{cyan}Atomique Rust 1.0.0{reset}",
+     cyan = color::Fg(color::Cyan),
+     reset = color::Fg(color::Reset));
+       println!("\r");
+}
+
+fn menu() {
+
+    'menuloop: loop {
+
+    let options: Vec<&str> = 
+        vec!["Exit","Todo","Note","Read list", "Watch list"];
+
+    let ans: Result<&str, InquireError> =
+        Select::new("Select Module", options).prompt();
+
+    match ans {
+
+     Ok(choice) => {
+
+        if choice == "Exit" {
+           println!("ktxbye");
+
+           break 'menuloop;
+
+        } else if choice == "Todo" {
+           header();
+           todo::show();
+        } else {
+            header();
+            println!("{} Module not implemented yet", choice);
+           }        
+      },
+
+    Err(_) =>  { 
+        header();
+        println!("There was an error, please try again");
+       },
+
+     }
+
+  }
+
 }
