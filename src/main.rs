@@ -61,5 +61,6 @@ fn menu() {
      }
 
   }
+    println!("{}", clear::All);
 
 }
